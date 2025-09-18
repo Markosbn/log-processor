@@ -136,13 +136,19 @@ public class LogProcessorService {
                                 log.info("Linha encontrada:" + linha);
                                 nomeArquivo = linha.substring(linha.indexOf(idNfe));
 
+                                int interarionCount = 0;
                                 boolean controleLinhas = true;
                                 while (controleLinhas) {
+                                    interarionCount++;
                                     var linhaNova = br.readLine();
-                                    linhasParaProcessar.add(linhaNova);
+                                    if (linhaNova == null || (interarionCount == 1 && !linhaNova.startsWith("OK:"))) break;
                                     if (linhaNova.startsWith("XML")) controleLinhas = false;
+                                    linhasParaProcessar.add(linhaNova);
                                 }
-
+                                if (linhasParaProcessar.isEmpty()) {
+                                    log.info("Nenhuma linha encontrada para processar");
+                                    break;
+                                }
                                 salvarResultadosEmArquivo(linhasParaProcessar, nomeArquivo);
                                 break;
                             }
